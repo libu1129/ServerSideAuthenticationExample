@@ -1,0 +1,33 @@
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code{
+    [Inject] TokenProvider tokenProvider { get; set; }
+    [Parameter] public string AntiforgeryToken { get; set; } //_Host에서 설정한 AntiforgeryToken 가 전달되어 온다
+
+    protected override Task OnInitializedAsync()
+    {
+        tokenProvider.AntiforgeryToken = AntiforgeryToken; //전달되어온 값을 서비스에 입력해준다, 이후 다른 컴포넌트에서 가져다 쓰면됨.
+
+        /*
+         ...
+         <form method="post" action="Logout">
+             <input name="__RequestVerificationToken" type="hidden" value="@tokenProvider.AntiforgeryToken">
+             <button type="submit" class="nav-link btn btn-link" title="Log out">
+                 <span class="oi oi-account-logout"></span>
+             </button>
+         </form>
+         ...
+         */
+
+        return base.OnInitializedAsync();
+    }
+}
