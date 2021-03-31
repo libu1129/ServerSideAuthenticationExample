@@ -19,6 +19,7 @@
     <link href="ServerSideAuthenticationExample.styles.css" rel="stylesheet" />
 </head>
 <body>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     @{
         //1번
         var token = antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
@@ -39,5 +40,30 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+
+
+    <script>
+        //디버그 빌드시 자동 리로드. 인증과 상관없음
+        Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+            console.warn("_reconnectCallback");
+            start_reload("/");
+        }
+
+        function start_reload(url) {
+            $.ajax({
+                type: "GET",
+                url: url,
+                timeout: 3000
+            }).done(function (result) {
+                console.log("working");
+                document.location.reload();
+            }).fail(function () {
+                console.log("fail, retry");
+                setTimeout(function () {
+                    start_reload(url);
+                }, 1000);
+            });
+        }
+    </script>
 </body>
 </html>

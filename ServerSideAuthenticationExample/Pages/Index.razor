@@ -5,3 +5,19 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+
+@if (client.is_logon == false)
+{
+    <input type="text" placeholder="아이디" @bind-value="id" />
+    <a class="btn btn-primary" href="javascript:void(0)" @onclick="login">로그인</a>
+}
+
+@code{
+    [Inject] ClientProvider client { get; set; }
+    string id;
+    private async Task login()
+    {
+        await client.Login(id, "", false);
+    }
+}

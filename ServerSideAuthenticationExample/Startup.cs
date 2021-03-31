@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,6 +10,7 @@ using ServerSideAuthenticationExample.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace ServerSideAuthenticationExample
@@ -29,7 +31,32 @@ namespace ServerSideAuthenticationExample
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+
+            //여기 아래로 다 인증 관련
+            services.AddHttpContextAccessor();
+            services.AddScoped<HttpContextAccessor>();
+            services.AddHttpClient();
+            services.AddScoped<HttpClient>();
+
             services.AddScoped<TokenProvider>();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.Strict;
+            });
+            services.AddAuthentication("Cookies")
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login";
+                    options.AccessDeniedPath = "/AccessDenied";
+                    //options.ExpireTimeSpan = new TimeSpan(7, 0, 0, 0);
+                });
+            services.AddScoped<ClientProvider>();
+            /*services.AddAuthorization(options => {
+                options.AddPolicy("MustBeNinja", p => p.RequireAuthenticatedUser().RequireClaim("Role", "ninja"));
+                options.AddPolicy("MustBePirate", p => p.RequireAuthenticatedUser().RequireClaim("Role", "pirate"));
+                options.AddPolicy("MustBeNinjaOrPirate", p => p.RequireAuthenticatedUser().RequireClaim("Role", "pirate", "ninja"));
+            });*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,10 +75,17 @@ namespace ServerSideAuthenticationExample
 
             app.UseRouting();
 
+            //인증!
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+
+
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}"); //rest api 구축
             });
         }
     }
