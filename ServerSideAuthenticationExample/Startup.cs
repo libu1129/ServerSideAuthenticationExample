@@ -30,7 +30,6 @@ namespace ServerSideAuthenticationExample
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
 
             //여기 아래로 다 인증 관련
             services.AddHttpContextAccessor();

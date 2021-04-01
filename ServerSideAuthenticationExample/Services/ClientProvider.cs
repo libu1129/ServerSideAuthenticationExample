@@ -60,7 +60,7 @@ namespace ServerSideAuthenticationExample.Services
         {
             try
             {
-                //아디비번체크, 로그인 여부 판단
+                //아디비번체크, 로그인 여부 판단 로직 작성영역
 
 
                 //로그인 처리
@@ -76,9 +76,6 @@ namespace ServerSideAuthenticationExample.Services
                 string antiforgerytoken = token_provider.AntiforgeryToken;
                 var fields = new { __RequestVerificationToken = antiforgerytoken, session_id = id, keep_login = keep_login };
                 var receive = await page_js.InvokeAsync<string>("submitForm", "/login-request/", fields);
-
-                //var result = await http.PostAsync($"{nav.BaseUri}login-request", stringContent).ConfigureAwait(false);
-                //var result = await http.PostAsync($"{nav.BaseUri}api/home/login", stringContent).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
