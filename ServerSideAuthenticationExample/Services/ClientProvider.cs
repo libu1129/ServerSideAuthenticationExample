@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using ServerSideAuthenticationExample.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -65,17 +64,14 @@ namespace ServerSideAuthenticationExample.Services
 
 
                 //로그인 처리
-                var param = JsonSerializer.Serialize(new SessionRequest
-                {
-                    session_id = id,
-                    keep_login = keep_login
-                });
-                var stringContent = new StringContent(param, Encoding.UTF8, "application/json");
-                stringContent.Headers.Add("__RequestVerificationToken", token_provider.AntiforgeryToken);
-
                 var page_js = await js.InvokeAsync<IJSObjectReference>("import", $"/js/interop.js");
                 string antiforgerytoken = token_provider.AntiforgeryToken;
-                var fields = new { __RequestVerificationToken = antiforgerytoken, session_id = id, keep_login = keep_login };
+                var fields = new
+                {
+                    __RequestVerificationToken = antiforgerytoken,
+                    session_id = id,
+                    keep_login = keep_login
+                };
                 var receive = await page_js.InvokeAsync<string>("submitForm", "/login-request/", fields);
 
                 nav.NavigateTo(href ?? nav.Uri, true);
