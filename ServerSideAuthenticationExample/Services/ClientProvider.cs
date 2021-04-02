@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using ServerSideAuthenticationExample.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Net.Http;
@@ -19,7 +20,7 @@ namespace ServerSideAuthenticationExample.Services
         TokenProvider token_provider;
         IJSRuntime js;
         NavigationManager nav;
-        AuthenticationState auth_state;
+        public AuthenticationState auth_state;
         HttpClient http;
 
         public bool is_logon => auth_state?.User?.Identity?.IsAuthenticated ?? false;
@@ -56,7 +57,7 @@ namespace ServerSideAuthenticationExample.Services
         /// <param name="pass"></param>
         /// <param name="keep_login"></param>
         /// <returns></returns>
-        public async Task Login(string id, string pass, bool keep_login)
+        public async Task Login(string id, string pass, bool keep_login, string href = null)
         {
             try
             {
@@ -76,6 +77,30 @@ namespace ServerSideAuthenticationExample.Services
                 string antiforgerytoken = token_provider.AntiforgeryToken;
                 var fields = new { __RequestVerificationToken = antiforgerytoken, session_id = id, keep_login = keep_login };
                 var receive = await page_js.InvokeAsync<string>("submitForm", "/login-request/", fields);
+
+                nav.NavigateTo(href ?? nav.Uri, true);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public async Task Logout(string href = null)
+        {
+            try
+            {
+                string antiforgerytoken = token_provider.AntiforgeryToken;
+                var fields = new { __RequestVerificationToken = antiforgerytoken };
+                var page_js = await js.InvokeAsync<IJSObjectReference>("import", $"/js/interop.js");
+                var receive = await page_js.InvokeAsync<string>("submitForm", "/logout-request/", fields);
+
+                await Task.Delay(500);
+                load_auth_state();
+
+
+
+                nav.NavigateTo(href ?? nav.Uri, true);
             }
             catch (Exception ex)
             {

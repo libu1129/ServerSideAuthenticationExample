@@ -1,17 +1,18 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<h1>Blazor ServerSidew Cookie login example</h1>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-
-@if (client.is_logon == false)
-{
-    <input type="text" placeholder="아이디" @bind-value="id" />
-    <a class="btn btn-primary" href="javascript:void(0)" @onclick="login">로그인</a>
-}
+<div class="mt-3">
+    @if (client.is_logon == false)
+    {
+        <input type="text" placeholder="아이디" @bind-value="id" />
+        <a class="btn btn-primary" href="javascript:void(0)" @onclick="login">로그인</a>
+    }
+    else
+    {
+        <a href="javascript:void(0)" @onclick=@(() => client.Logout())>@client.auth_state?.User.Identity.Name 로그아웃하기</a>
+    }
+</div>
 
 @code{
     [Inject] ClientProvider client { get; set; }
