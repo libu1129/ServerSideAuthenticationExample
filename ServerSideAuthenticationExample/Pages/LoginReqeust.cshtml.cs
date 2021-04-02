@@ -21,11 +21,8 @@ namespace ServerSideAuthenticationExample.Pages
 
         public async Task<IActionResult> OnPostAsync(string session_id, bool keep_login)
         {
-            string returnUrl = Url.Content("~/");
             bool result = true;
             string message = "login success";
-            var code = "";
-            var key = "";
             try
             {
                 try
@@ -79,18 +76,8 @@ namespace ServerSideAuthenticationExample.Pages
             return this.Content(JsonSerializer.Serialize(new
             {
                 result = result,
-                code = code,
                 message = message,
-                key = key
             }));
-/*
-            return this.Content(JObject.FromObject(new
-            {
-                result = result,
-                code = code,
-                message = message,
-                key = key
-            }).ToString());*/
         }
     }
 }

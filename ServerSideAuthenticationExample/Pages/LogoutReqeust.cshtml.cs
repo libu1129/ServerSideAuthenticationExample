@@ -18,7 +18,7 @@ namespace ServerSideAuthenticationExample.Pages
         public async Task<IActionResult> OnPostAsync()
         {
             bool result = true;
-            string message = "";
+            string message = "logout success";
             try
             {
                 Console.WriteLine("Posting logout..");
@@ -33,8 +33,8 @@ namespace ServerSideAuthenticationExample.Pages
             
             return this.Content(JsonSerializer.Serialize(new
             {
-                success = true,
-                message = "logout success"
+                success = result,
+                message = message
             }));
         }
     }
