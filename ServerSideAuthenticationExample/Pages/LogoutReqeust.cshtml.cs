@@ -34,7 +34,7 @@ namespace ServerSideAuthenticationExample.Pages
             return this.Content(JsonSerializer.Serialize(new
             {
                 success = true,
-                message = "로그아웃 성공"
+                message = "logout success"
             }));
         }
     }

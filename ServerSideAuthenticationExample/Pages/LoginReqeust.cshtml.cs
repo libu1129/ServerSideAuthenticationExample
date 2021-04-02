@@ -19,20 +19,11 @@ namespace ServerSideAuthenticationExample.Pages
         {
         }
 
-        /*public async Task<IActionResult> OnPostAsync([FromBody] SessionRequest request)
-        {
-            return this.Content(JsonSerializer.Serialize(new
-            {
-                result = true,
-            }));
-        }*/
-
-
         public async Task<IActionResult> OnPostAsync(string session_id, bool keep_login)
         {
             string returnUrl = Url.Content("~/");
             bool result = true;
-            string message = "로그인 처리됬습니다";
+            string message = "login success";
             var code = "";
             var key = "";
             try
