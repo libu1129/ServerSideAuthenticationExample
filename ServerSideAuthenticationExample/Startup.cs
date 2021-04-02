@@ -82,9 +82,6 @@ namespace ServerSideAuthenticationExample
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
-
-
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}"); //rest api ±∏√‡
             });
         }
     }
