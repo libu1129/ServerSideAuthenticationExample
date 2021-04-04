@@ -15,8 +15,8 @@ namespace ServerSideAuthenticationExample.Services
 {
     public class ClientProvider
     {
+        public string AntiforgeryToken { get; set; }
         AuthenticationStateProvider auth_provider;
-        TokenProvider token_provider;
         IJSRuntime js;
         NavigationManager nav;
         public AuthenticationState auth_state;
@@ -25,13 +25,11 @@ namespace ServerSideAuthenticationExample.Services
         public bool is_logon => auth_state?.User?.Identity?.IsAuthenticated ?? false;
 
         public ClientProvider(AuthenticationStateProvider AuthProvider,
-            TokenProvider token_provider,
             IJSRuntime js,
             NavigationManager nav,
             HttpClient http)
         {
             this.auth_provider = AuthProvider;
-            this.token_provider = token_provider;
             this.js = js;
             this.nav = nav;
             this.http = http;
@@ -65,7 +63,7 @@ namespace ServerSideAuthenticationExample.Services
 
                 //로그인 처리
                 var page_js = await js.InvokeAsync<IJSObjectReference>("import", $"/js/interop.js");
-                string antiforgerytoken = token_provider.AntiforgeryToken;
+                string antiforgerytoken = AntiforgeryToken;
                 var fields = new
                 {
                     __RequestVerificationToken = antiforgerytoken,
@@ -86,7 +84,7 @@ namespace ServerSideAuthenticationExample.Services
         {
             try
             {
-                string antiforgerytoken = token_provider.AntiforgeryToken;
+                string antiforgerytoken = AntiforgeryToken;
                 var fields = new { __RequestVerificationToken = antiforgerytoken };
                 var page_js = await js.InvokeAsync<IJSObjectReference>("import", $"/js/interop.js");
                 var receive = await page_js.InvokeAsync<string>("submitForm", "/logout-request/", fields);

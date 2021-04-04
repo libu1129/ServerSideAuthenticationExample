@@ -10,12 +10,12 @@
 </Router>
 
 @code{
-    [Inject] TokenProvider tokenProvider { get; set; }
+    [Inject] ClientProvider client { get; set; }
     [Parameter] public string AntiforgeryToken { get; set; } //_Host에서 설정한 AntiforgeryToken 가 전달되어 온다
 
     protected override Task OnInitializedAsync()
     {
-        tokenProvider.AntiforgeryToken = AntiforgeryToken; //전달되어온 값을 서비스에 입력해준다, 이후 다른 컴포넌트에서 가져다 쓰면됨.
+        client.AntiforgeryToken = AntiforgeryToken; //전달되어온 값을 서비스에 입력해준다, 이후 다른 컴포넌트에서 가져다 쓰면됨.
 
         /*
          ...
