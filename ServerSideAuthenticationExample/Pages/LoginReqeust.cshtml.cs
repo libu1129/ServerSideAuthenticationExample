@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using System.Text.Json;
-using ServerSideAuthenticationExample.Data;
 
 namespace ServerSideAuthenticationExample.Pages
 {
